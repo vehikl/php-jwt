@@ -8,15 +8,10 @@ php:
   - 7
   - hhvm
 
-sudo: false
-
 install:
   - composer self-update
   - composer global require "fxp/composer-asset-plugin:1.0.0"
   - composer install --prefer-dist --dev
   - composer info --installed
-
-before_script:
-  - wget -nc http://getcomposer.org/composer.phar
 
 script: phpunit --configuration phpunit.xml.dist
