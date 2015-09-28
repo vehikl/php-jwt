@@ -1,6 +1,9 @@
 <?php
 use \Firebase\JWT\JWT;
-
+include_once('../src/JWT.php');
+include_once('../src/ExpiredException.php');
+include_once('../src/BeforeValidException.php');
+include_once('../src/SignatureInvalidException.php');
 class JWTTest extends PHPUnit_Framework_TestCase
 {
     public function testEncodeDecode()
