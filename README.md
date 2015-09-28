@@ -5,8 +5,7 @@
 
 PHP-JWT
 =======
-A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should
-conform to the [current spec](http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-06)
+HP library to encode and decode JSON Web Tokens (JWT) using several key types including JWK. Conform to the [current spec](http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-06)
 
 Installation
 ------------
@@ -14,7 +13,7 @@ Installation
 Use composer to manage your dependencies and download PHP-JWT:
 
 ```bash
-composer require firebase/php-jwt
+composer require fproject/php-jwt
 ```
 
 Example
@@ -68,10 +67,10 @@ Changelog
 #### 3.0.0 / 2015-07-22
 - Minimum PHP version updated from `5.2.0` to `5.3.0`.
 - Add `\Firebase\JWT` namespace. See
-[#59](https://github.com/firebase/php-jwt/pull/59) for details. Thanks to
+[#59](https://github.com/fproject/php-jwt/pull/59) for details. Thanks to
 [@Dashron](https://github.com/Dashron)!
 - Require a non-empty key to decode and verify a JWT. See
-[#60](https://github.com/firebase/php-jwt/pull/60) for details. Thanks to
+[#60](https://github.com/fproject/php-jwt/pull/60) for details. Thanks to
 [@sjones608](https://github.com/sjones608)!
 - Cleaner documentation blocks in the code. See
 [#62](https://github.com/firebase/php-jwt/pull/62) for details. Thanks to
@@ -79,7 +78,7 @@ Changelog
 
 #### 2.2.0 / 2015-06-22
 - Add support for adding custom, optional JWT headers to `JWT::encode()`. See
-[#53](https://github.com/firebase/php-jwt/pull/53/files) for details. Thanks to
+[#53](https://github.com/fproject/php-jwt/pull/53/files) for details. Thanks to
 [@mcocaro](https://github.com/mcocaro)!
 
 #### 2.1.0 / 2015-05-20
