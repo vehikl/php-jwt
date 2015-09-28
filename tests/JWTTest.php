@@ -206,14 +206,24 @@ class JWTTest extends PHPUnit_Framework_TestCase
 
     public function testRSEncodeDecode()
     {
-        $privKey = openssl_pkey_new(array('digest_alg' => 'sha256',
-            'private_key_bits' => 1024,
+        $privKey = openssl_pkey_new(array(
+            'config'=>'C:/wamp/bin/apache/Apache2.4.4/conf/openssl.cnf',
+            'digest_alg' => 'sha512',
+            'private_key_bits' => 4096,
             'private_key_type' => OPENSSL_KEYTYPE_RSA));
-        $msg = JWT::encode('abc', $privKey, 'RS256');
-        $pubKey = openssl_pkey_get_details($privKey);
-        $pubKey = $pubKey['key'];
-        $decoded = JWT::decode($msg, $pubKey, array('RS256'));
-        $this->assertEquals($decoded, 'abc');
+        if($privKey === false)
+        {
+            $s = openssl_error_string();
+            $this->fail("Cannot create private key: $s");
+        }
+        else
+        {
+            $msg = JWT::encode('abc', $privKey, 'RS256');
+            $pubKey = openssl_pkey_get_details($privKey);
+            $pubKey = $pubKey['key'];
+            $decoded = JWT::decode($msg, $pubKey, array('RS256'));
+            $this->assertEquals($decoded, 'abc');
+        }
     }
 
     public function testKIDChooser()
