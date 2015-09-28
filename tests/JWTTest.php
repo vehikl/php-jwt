@@ -1,6 +1,8 @@
 <?php
 use \Firebase\JWT\JWT;
+use \Firebase\JWT\JWK;
 include_once('../src/JWT.php');
+include_once('../src/JWK.php');
 include_once('../src/ExpiredException.php');
 include_once('../src/BeforeValidException.php');
 include_once('../src/SignatureInvalidException.php');
@@ -17,6 +19,18 @@ class JWTTest extends PHPUnit_Framework_TestCase
         $msg = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.Iio6aHR0cDovL2FwcGxpY2F0aW9uL2NsaWNreT9ibGFoPTEuMjMmZi5vbz00NTYgQUMwMDAgMTIzIg.E_U8X2YpMT5K1cEiT_3-IvBYfrdIFIeVYeOqre_Z5Cg';
         $this->assertEquals(
             JWT::decode($msg, 'my_key', array('HS256')),
+            '*:http://application/clicky?blah=1.23&f.oo=456 AC000 123'
+        );
+    }
+
+    public function testDecodeByJWKKeySet()
+    {
+        $jsKey = '{"keys":[{"kty":"RSA","e":"AQAB","use":"sig","kid":"s1","n":"kWp2zRA23Z3vTL4uoe8kTFptxBVFunIoP4t_8TDYJrOb7D1iZNDXVeEsYKp6ppmrTZDAgd-cNOTKLd4M39WJc5FN0maTAVKJc7NxklDeKc4dMe1BGvTZNG4MpWBo-taKULlYUu0ltYJuLzOjIrTHfarucrGoRWqM0sl3z2-fv9k"}]}';
+        $key = JWK::parseKeySet($jsKey);
+
+        $msg = 'eyJraWQiOiJzMSIsImFsZyI6IlJTMjU2In0.eyJzY3AiOlsib3BlbmlkIiwiZW1haWwiLCJwcm9maWxlIiwiYWFzIl0sInN1YiI6InRVQ1l0bmZJQlBXY3JTSmY0eUJmdk4xa3d3NEtHY3kzTElQazFHVnpzRTAiLCJjbG0iOlsiITV2OEgiXSwiaXNzIjoiaHR0cDpcL1wvMTMwLjIxMS4yNDMuMTE0OjgwODBcL2MyaWQiLCJleHAiOjE0NDExMjY1MzksInVpcCI6eyJncm91cHMiOlsiYWRtaW4iLCJhdWRpdCJdfSwiY2lkIjoicGstb2lkYy0wMSJ9.PvYrnf3k1Z0wgRwCgq0WXKaoIv1hHtzBFO5cGfCs6bl4suc6ilwCWmJqRxGYkU2fNTGyMOt3OUnnBEwl6v5qN6jv7zbkVAVKVvbQLxhHC2nXe3izvoCiVaMEH6hE7VTWwnPbX_qO72mCwTizHTJTZGLOsyXLYM6ctdOMf7sFPTI';
+        $this->assertEquals(
+            JWT::decode($msg, $key, array('RS256')),
             '*:http://application/clicky?blah=1.23&f.oo=456 AC000 123'
         );
     }
@@ -207,7 +221,7 @@ class JWTTest extends PHPUnit_Framework_TestCase
     public function testRSEncodeDecode()
     {
         $privKey = openssl_pkey_new(array(
-            'config'=>'C:/wamp/bin/apache/Apache2.4.4/conf/openssl.cnf',
+            //'config'=>'C:/wamp/bin/apache/Apache2.4.4/conf/openssl.cnf',//Remove this line when test on travis-ci.org
             'digest_alg' => 'sha512',
             'private_key_bits' => 4096,
             'private_key_type' => OPENSSL_KEYTYPE_RSA));
