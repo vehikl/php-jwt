@@ -36,23 +36,28 @@ class JWK
                 $source = [$source];
         }
 
-        if(isset($source['keys']))
-            $source = $source['keys'];
-
-        foreach($source as $k=>$v)
+        if(is_array($source))
         {
-            if(!is_string($k))
+            if(isset($source['keys']))
+                $source = $source['keys'];
+
+            foreach($source as $k=>$v)
             {
-                if(is_array($v) && isset($v['kid']))
-                    $k = $v['kid'];
-                elseif(is_object($v) && property_exists($v,'kid'))
-                    $k = $v->{'kid'};
+                if(!is_string($k))
+                {
+                    if(is_array($v) && isset($v['kid']))
+                        $k = $v['kid'];
+                    elseif(is_object($v) && property_exists($v,'kid'))
+                        $k = $v->{'kid'};
+                }
+                $v = self::parseKey($v);
+                $keys[$k] = $v;
             }
-            $v = self::parseKey($v);
-            $keys[$k] = $v;
+
+            return $keys;
         }
 
-        return $keys;
+        throw new UnexpectedValueException('Failed to parse JWK');
     }
 
     /**
@@ -64,9 +69,10 @@ class JWK
     {
         if(!is_array($source))
             $source = (array)$source;
-        if(isset($source['kty']) && isset($source['n']) && isset($source['e']))
+        if(!empty($source) && isset($source['kty']) && isset($source['n']) && isset($source['e']))
         {
-            switch ($source['kty']) {
+            switch ($source['kty'])
+            {
                 case 'RSA':
                     if (array_key_exists('d', $source))
                         throw new UnexpectedValueException('Failed to parse JWK: RSA private key is not supported');
