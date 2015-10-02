@@ -8,6 +8,6 @@ php:
   - hhvm
 install:
   - composer self-update
-  - composer update --ignore-platform-reqs
+  - composer update
   - composer info --installed
 script: phpunit -c phpunit.xml.dist
