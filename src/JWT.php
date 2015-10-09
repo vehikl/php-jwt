@@ -23,8 +23,9 @@ class JWT
 {
 
     /**
-     * When checking nbf, iat or expiration times,
-     * we want to provide some extra leeway time to
+     * The server leeway time in seconds, to aware the acceptable different time between clocks
+     * of token issued server and relying parties.
+     * When checking nbf, iat or expiration times, we want to provide some extra leeway time to
      * account for clock skew.
      */
     public static $leeway = 0;
