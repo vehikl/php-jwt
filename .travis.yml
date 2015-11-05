@@ -8,6 +8,7 @@ php:
   - hhvm
 install:
   - composer self-update
+  - composer global require "fxp/composer-asset-plugin:*"
   - composer update
   - composer info --installed
 script: phpunit -c phpunit.xml.dist
