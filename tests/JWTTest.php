@@ -24,11 +24,10 @@ class JWTTest extends PHPUnit_Framework_TestCase
         $jsKey = '{"keys":[{"kty":"RSA","e":"AQAB","use":"sig","kid":"s1","n":"kWp2zRA23Z3vTL4uoe8kTFptxBVFunIoP4t_8TDYJrOb7D1iZNDXVeEsYKp6ppmrTZDAgd-cNOTKLd4M39WJc5FN0maTAVKJc7NxklDeKc4dMe1BGvTZNG4MpWBo-taKULlYUu0ltYJuLzOjIrTHfarucrGoRWqM0sl3z2-fv9k"}]}';
         $key = JWK::parseKeySet($jsKey);
 
-        $msg = 'eyJraWQiOiJzMSIsImFsZyI6IlJTMjU2In0.eyJzY3AiOlsib3BlbmlkIiwiZW1haWwiLCJwcm9maWxlIiwicnMtcGstbWFpbiIsInJzLXBrLXNvIiwicnMtcGstaXNzdWUiLCJycy1way13ZWIiXSwic3ViIjoiMjEiLCJjbG0iOlsicHJvamVjdEdyb3VwcyIsImV4SW5mbyIsIiE1djhIIl0sImlzcyI6Imh0dHA6XC9cL2lkLnByb2plY3RraXQubmV0IiwiZXhwIjoxNDQ4ODE5NjAwLCJ1aXAiOnsiZ3JvdXBzIjpbImFkbWluIiwiYXVkaXQiXX0sImNpZCI6InBrLW9pZGMtMDEifQ.N27jGoC-gblk0JqSJok_iczicoH_2QNM3zivesJDJhjI4xvQo6tP4Jqy6_uHev2s8Iio1StJz1E56mRXjWpxwoDOVCIt0Umiuyj7dQLyA4IAnH9_4y8Sd6HXehS2KaNNYxo0Wv5ZsgVqDYXvwBLN5T_b853gkCndhOj6j56R0jw';
-        $this->assertEquals(
-            JWT::decode($msg, $key, array('RS256')),
-            '*:http://application/clicky?blah=1.23&f.oo=456 AC000 123'
-        );
+        $msg = 'eyJraWQiOiJzMSIsImFsZyI6IlJTMjU2In0.eyJzY3AiOlsib3BlbmlkIiwiZW1haWwiLCJwcm9maWxlIiwiYWFzIl0sInN1YiI6InRVQ1l0bmZJQlBXY3JTSmY0eUJmdk4xa3d3NEtHY3kzTElQazFHVnpzRTAiLCJjbG0iOlsiITV2OEgiXSwiaXNzIjoiaHR0cDpcL1wvMTMwLjIxMS4yNDMuMTE0OjgwODBcL2MyaWQiLCJleHAiOjE0NDExMjY1MzksInVpcCI6eyJncm91cHMiOlsiYWRtaW4iLCJhdWRpdCJdfSwiY2lkIjoicGstb2lkYy0wMSJ9.PvYrnf3k1Z0wgRwCgq0WXKaoIv1hHtzBFO5cGfCs6bl4suc6ilwCWmJqRxGYkU2fNTGyMOt3OUnnBEwl6v5qN6jv7zbkVAVKVvbQLxhHC2nXe3izvoCiVaMEH6hE7VTWwnPbX_qO72mCwTizHTJTZGLOsyXLYM6ctdOMf7sFPTI';
+        $payload = JWT::decode($msg, $key, array('RS256'));
+        echo print_r($payload,true);
+        $this->assertEquals("tUCYtnfIBPWcrSJf4yBfvN1kww4KGcy3LIPk1GVzsE0",$payload->sub);
     }
 
     public function testUrlSafeCharacters()
