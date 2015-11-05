@@ -1,6 +1,6 @@
 {
     "name": "fproject/php-jwt",
-    "description": "PHP library to encode and decode JSON Web Tokens (JWT). Supports several key types including JWK. Conform to the current spec.",
+    "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Support several key types including JWK.",
     "homepage": "https://github.com/fproject/php-jwt",
     "authors": [
         {

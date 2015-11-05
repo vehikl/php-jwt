@@ -5,7 +5,7 @@
 
 PHP-JWT
 =======
-PHP library to encode and decode JSON Web Tokens (JWT) using several key types including JWK. Conform to the [current spec](http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-06)
+PHP library to encode and decode JSON Web Tokens (JWT). Support several key types including JWK. Conform to the [current spec](http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-06)
 
 Installation
 ------------

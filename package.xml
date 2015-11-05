@@ -6,7 +6,7 @@
  <name>JWT</name>
  <channel>pear.php.net</channel>
  <summary>A JWT encoder/decoder.</summary>
- <description>A JWT encoder/decoder library for PHP.</description>
+ <description>A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Support several key types including JWK</description>
  <lead>
   <name>Neuman Vong</name>
   <user>lcfrs</user>
