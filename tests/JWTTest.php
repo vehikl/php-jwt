@@ -19,12 +19,24 @@ class JWTTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testDecodeByJWKKeySet()
+    /**
+     * @expectedException Firebase\JWT\ExpiredException
+     */
+    public function testDecodeByJWKKeySetTokenExpired()
     {
         $jsKey = '{"keys":[{"kty":"RSA","e":"AQAB","use":"sig","kid":"s1","n":"kWp2zRA23Z3vTL4uoe8kTFptxBVFunIoP4t_8TDYJrOb7D1iZNDXVeEsYKp6ppmrTZDAgd-cNOTKLd4M39WJc5FN0maTAVKJc7NxklDeKc4dMe1BGvTZNG4MpWBo-taKULlYUu0ltYJuLzOjIrTHfarucrGoRWqM0sl3z2-fv9k"}]}';
         $key = JWK::parseKeySet($jsKey);
 
         $msg = 'eyJraWQiOiJzMSIsImFsZyI6IlJTMjU2In0.eyJzY3AiOlsib3BlbmlkIiwiZW1haWwiLCJwcm9maWxlIiwiYWFzIl0sInN1YiI6InRVQ1l0bmZJQlBXY3JTSmY0eUJmdk4xa3d3NEtHY3kzTElQazFHVnpzRTAiLCJjbG0iOlsiITV2OEgiXSwiaXNzIjoiaHR0cDpcL1wvMTMwLjIxMS4yNDMuMTE0OjgwODBcL2MyaWQiLCJleHAiOjE0NDExMjY1MzksInVpcCI6eyJncm91cHMiOlsiYWRtaW4iLCJhdWRpdCJdfSwiY2lkIjoicGstb2lkYy0wMSJ9.PvYrnf3k1Z0wgRwCgq0WXKaoIv1hHtzBFO5cGfCs6bl4suc6ilwCWmJqRxGYkU2fNTGyMOt3OUnnBEwl6v5qN6jv7zbkVAVKVvbQLxhHC2nXe3izvoCiVaMEH6hE7VTWwnPbX_qO72mCwTizHTJTZGLOsyXLYM6ctdOMf7sFPTI';
+        JWT::decode($msg, $key, array('RS256'));
+    }
+
+    public function testDecodeByJWKKeySet()
+    {
+        $jsKey = '{"keys":[{"kty":"RSA","e":"AQAB","use":"sig","kid":"s1","n":"kWp2zRA23Z3vTL4uoe8kTFptxBVFunIoP4t_8TDYJrOb7D1iZNDXVeEsYKp6ppmrTZDAgd-cNOTKLd4M39WJc5FN0maTAVKJc7NxklDeKc4dMe1BGvTZNG4MpWBo-taKULlYUu0ltYJuLzOjIrTHfarucrGoRWqM0sl3z2-fv9k"}]}';
+        $key = JWK::parseKeySet($jsKey);
+
+        $msg = 'eyJraWQiOiJzMSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJYcEFCeEpnVXhLN2JKdnVnRGFXaXlYLWF6aDliSlJ4OGU1dGJzdjVZblpRIiwic2NwIjpbIm9wZW5pZCIsImVtYWlsIiwicHJvZmlsZSIsInJzLXBrLW1haW4iLCJycy1way1zbyIsInJzLXBrLWlzc3VlIiwicnMtcGstd2ViIl0sImNsbSI6WyJwcm9qZWN0R3JvdXBzIiwiITV2OEgiXSwiaXNzIjoiaHR0cDpcL1wvaWQucHJvamVjdGtpdC5uZXQiLCJleHAiOjE0NzYyNDgyMzMsImNpZCI6ImNpZC1way13ZWIifQ.cxkukSfQ9YrvLr8X-0RV_00FRoSvnA1er-6qvfpgIKjShjUfjga4T-wCv-KrVpYqQAxTdDZZJNwiDo3oLuqSwsvBmwT1Wyt1wce9GLAd3MSW9KtHnygGwqtdbP3taWieQrpgNNlQTJHex-XqlkVR722pxgPjtj-96IV8WPC0vek';
         $payload = JWT::decode($msg, $key, array('RS256'));
         echo print_r($payload,true);
         $this->assertEquals("tUCYtnfIBPWcrSJf4yBfvN1kww4KGcy3LIPk1GVzsE0",$payload->sub);
