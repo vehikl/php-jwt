@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/fproject/php-jwt.png?branch=master)](https://travis-ci.org/fproject/php-jwt)
 [![Latest Stable Version](https://poser.pugx.org/fproject/php-jwt/v/stable)](https://packagist.org/packages/fproject/php-jwt)
-[![Total Downloads](https://poser.pugx.org/fproject/php-jwt/downloads)](https://packagist.org/packages/firebase/php-jwt)
+[![Total Downloads](https://poser.pugx.org/firebase/php-jwt/downloads)](https://packagist.org/packages/fproject/php-jwt)
 [![License](https://poser.pugx.org/fproject/php-jwt/license)](https://packagist.org/packages/fproject/php-jwt)
 
 PHP-JWT
