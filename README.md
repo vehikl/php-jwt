@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/firebase/php-jwt.png?branch=master)](https://travis-ci.org/firebase/php-jwt)
-[![Latest Stable Version](https://poser.pugx.org/firebase/php-jwt/v/stable)](https://packagist.org/packages/firebase/php-jwt)
-[![Total Downloads](https://poser.pugx.org/firebase/php-jwt/downloads)](https://packagist.org/packages/firebase/php-jwt)
-[![License](https://poser.pugx.org/firebase/php-jwt/license)](https://packagist.org/packages/firebase/php-jwt)
+[![Build Status](https://travis-ci.org/fproject/php-jwt.png?branch=master)](https://travis-ci.org/fproject/php-jwt)
+[![Latest Stable Version](https://poser.pugx.org/fproject/php-jwt/v/stable)](https://packagist.org/packages/fproject/php-jwt)
+[![Total Downloads](https://poser.pugx.org/fproject/php-jwt/downloads)](https://packagist.org/packages/fproject/php-jwt)
+[![License](https://poser.pugx.org/fproject/php-jwt/license)](https://packagist.org/packages/fproject/php-jwt)
 
 PHP-JWT
 =======
@@ -73,7 +73,7 @@ Changelog
 [#60](https://github.com/fproject/php-jwt/pull/60) for details. Thanks to
 [@sjones608](https://github.com/sjones608)!
 - Cleaner documentation blocks in the code. See
-[#62](https://github.com/firebase/php-jwt/pull/62) for details. Thanks to
+[#62](https://github.com/fproject/php-jwt/pull/62) for details. Thanks to
 [@johanderuijter](https://github.com/johanderuijter)!
 
 #### 2.2.0 / 2015-06-22
