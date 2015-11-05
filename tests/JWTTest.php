@@ -38,8 +38,8 @@ class JWTTest extends PHPUnit_Framework_TestCase
 
         $msg = 'eyJraWQiOiJzMSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJYcEFCeEpnVXhLN2JKdnVnRGFXaXlYLWF6aDliSlJ4OGU1dGJzdjVZblpRIiwic2NwIjpbIm9wZW5pZCIsImVtYWlsIiwicHJvZmlsZSIsInJzLXBrLW1haW4iLCJycy1way1zbyIsInJzLXBrLWlzc3VlIiwicnMtcGstd2ViIl0sImNsbSI6WyJwcm9qZWN0R3JvdXBzIiwiITV2OEgiXSwiaXNzIjoiaHR0cDpcL1wvaWQucHJvamVjdGtpdC5uZXQiLCJleHAiOjE0NzYyNDgyMzMsImNpZCI6ImNpZC1way13ZWIifQ.cxkukSfQ9YrvLr8X-0RV_00FRoSvnA1er-6qvfpgIKjShjUfjga4T-wCv-KrVpYqQAxTdDZZJNwiDo3oLuqSwsvBmwT1Wyt1wce9GLAd3MSW9KtHnygGwqtdbP3taWieQrpgNNlQTJHex-XqlkVR722pxgPjtj-96IV8WPC0vek';
         $payload = JWT::decode($msg, $key, array('RS256'));
-        echo print_r($payload,true);
-        $this->assertEquals("tUCYtnfIBPWcrSJf4yBfvN1kww4KGcy3LIPk1GVzsE0",$payload->sub);
+        $this->assertEquals("XpABxJgUxK7bJvugDaWiyX-azh9bJRx8e5tbsv5YnZQ",$payload->sub);
+        $this->assertEquals(1476248233,$payload->exp);
     }
 
     public function testUrlSafeCharacters()
