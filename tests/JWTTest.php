@@ -42,6 +42,17 @@ class JWTTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1476248233,$payload->exp);
     }
 
+    public function testDecodeByMultiJWKKeySet()
+    {
+        $jsKey = '{"keys":[{"kty":"RSA","e":"AQAB","use":"sig","kid":"CXup","n":"hrwD-lc-IwzwidCANmy4qsiZk11yp9kHykOuP0yOnwi36VomYTQVEzZXgh2sDJpGgAutdQudgwLoV8tVSsTG9SQHgJjH9Pd_9V4Ab6PANyZNG6DSeiq1QfiFlEP6Obt0JbRB3W7X2vkxOVaNoWrYskZodxU2V0ogeVL_LkcCGAyNu2jdx3j0DjJatNVk7ystNxb9RfHhJGgpiIkO5S3QiSIVhbBKaJHcZHPF1vq9g0JMGuUCI-OTSVg6XBkTLEGw1C_R73WD_oVEBfdXbXnLukoLHBS11p3OxU7f4rfxA_f_72_UwmWGJnsqS3iahbms3FkvqoL9x_Vj3GhuJSf97Q"},{"kty":"EC","use":"sig","crv":"P-256","kid":"yGvt","x":"pvgdqM3RCshljmuCF1D2Ez1w5ei5k7-bpimWLPNeEHI","y":"JSmUhbUTqiFclVLEdw6dz038F7Whw4URobjXbAReDuM"},{"kty":"EC","use":"sig","crv":"P-384","kid":"9nHY","x":"JPKhjhE0Bj579Mgj3Cn3ERGA8fKVYoGOaV9BPKhtnEobphf8w4GSeigMesL-038W","y":"UbJa1QRX7fo9LxSlh7FOH5ABT5lEtiQeQUcX9BW0bpJFlEVGqwec80tYLdOIl59M"},{"kty":"EC","use":"sig","crv":"P-521","kid":"tVzS","x":"AZgkRHlIyNQJlPIwTWdHqouw41k9dS3GJO04BDEnJnd_Dd1owlCn9SMXA-JuXINn4slwbG4wcECbctXb2cvdGtmn","y":"AdBC6N9lpupzfzcIY3JLIuc8y8MnzV-ItmzHQcC5lYWMTbuM9NU_FlvINeVo8g6i4YZms2xFB-B0VVdaoF9kUswC"}]}';
+        $key = JWK::parseKeySet($jsKey);
+
+        $msg = 'eyJraWQiOiJDWHVwIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJmOGI2N2NjNDYwMzA3NzdlZmQ4YmNlNmMxYmZlMjljNmMwZjgxOGVjIiwic2NwIjpbIm9wZW5pZCIsIm5hbWUiLCJwcm9maWxlIiwicGljdHVyZSIsImVtYWlsIiwicnMtcGstbWFpbiIsInJzLXBrLXNvIiwicnMtcGstaXNzdWUiLCJycy1way13ZWIiXSwiY2xtIjpbIiE1djhIIl0sImlzcyI6Imh0dHBzOlwvXC9pZC5wcm9qZWN0a2l0Lm5ldFwvYXV0aGVudGljYXRlIiwiZXhwIjoxNDkyMjI4MzM2LCJpYXQiOjE0OTEzNjQzMzYsImNpZCI6ImNpZC1way13ZWIifQ.KW1K-72bMtiNwvyYBgffG6VaG6I59cELGYQR8M2q7HA8dmzliu6QREJrqyPtwW_rDJZbsD3eylvkRinK9tlsMXCOfEJbxLdAC9b4LKOsnsbuXXwsJHWkFG0a7osdW0ZpXJDoMFlO1aosxRGMkaqhf1wIkvQ5PM_EB08LJv7oz64Antn5bYaoajwgvJRl7ChatRDn9Sx5UIElKD1BK4Uw5WdrZwBlWdWZVNCSFhy4F6SdZvi3OBlXzluDwq61RC-pl2iivilJNljYWVrthHDS1xdtaVz4oteHW13-IS7NNEz6PVnzo5nyoPWMAB4JlRnxcfOFTTUqOA2mX5Csg0UpdQ';
+        $payload = JWT::decode($msg, $key, array('RS256'));
+        $this->assertEquals("f8b67cc46030777efd8bce6c1bfe29c6c0f818ec",$payload->sub);
+        $this->assertEquals(1492228336,$payload->exp);
+    }
+
     public function testUrlSafeCharacters()
     {
         $encoded = JWT::encode('f?', 'a');
