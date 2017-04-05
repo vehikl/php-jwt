@@ -1,6 +1,7 @@
 <?php
 
 namespace Firebase\JWT;
+
 use UnexpectedValueException;
 
 /**
@@ -24,39 +25,37 @@ class JWK
     public static function parseKeySet($source)
     {
         $keys = [];
-        if(is_string($source))
-        {
+        if (is_string($source)) {
             $source = json_decode($source, true);
-        }
-        else if(is_object($source))
-        {
-            if(property_exists($source, 'keys'))
+        } else if (is_object($source)) {
+            if (property_exists($source, 'keys'))
                 $source = (array)$source;
             else
                 $source = [$source];
         }
 
-        if(is_array($source))
-        {
-            if(isset($source['keys']))
+        if (is_array($source)) {
+            if (isset($source['keys']))
                 $source = $source['keys'];
 
-            foreach($source as $k=>$v)
-            {
-                if(!is_string($k))
-                {
-                    if(is_array($v) && isset($v['kid']))
+            foreach ($source as $k => $v) {
+                if (!is_string($k)) {
+                    if (is_array($v) && isset($v['kid']))
                         $k = $v['kid'];
-                    elseif(is_object($v) && property_exists($v,'kid'))
+                    elseif (is_object($v) && property_exists($v, 'kid'))
                         $k = $v->{'kid'};
                 }
-                $v = self::parseKey($v);
-                $keys[$k] = $v;
+                try {
+                    $v = self::parseKey($v);
+                    $keys[$k] = $v;
+                } catch (UnexpectedValueException $e) {
+                    //Do nothing
+                }
             }
-
+        }
+        if (0 < count($keys)) {
             return $keys;
         }
-
         throw new UnexpectedValueException('Failed to parse JWK');
     }
 
@@ -67,19 +66,17 @@ class JWK
      */
     public static function parseKey($source)
     {
-        if(!is_array($source))
+        if (!is_array($source))
             $source = (array)$source;
-        if(!empty($source) && isset($source['kty']) && isset($source['n']) && isset($source['e']))
-        {
-            switch ($source['kty'])
-            {
+        if (!empty($source) && isset($source['kty']) && isset($source['n']) && isset($source['e'])) {
+            switch ($source['kty']) {
                 case 'RSA':
                     if (array_key_exists('d', $source))
                         throw new UnexpectedValueException('Failed to parse JWK: RSA private key is not supported');
 
                     $pem = self::createPemFromModulusAndExponent($source['n'], $source['e']);
                     $pKey = openssl_pkey_get_public($pem);
-                    if($pKey !== false)
+                    if ($pKey !== false)
                         return $pKey;
                     break;
                 default:
