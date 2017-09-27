@@ -241,7 +241,7 @@ class JWTTest extends \PHPUnit\Framework\TestCase
     public function testRSEncodeDecode()
     {
         $privKey = openssl_pkey_new(array(
-            'config'=>'C:/wamp64/bin/apache/apache2.4.27/conf/openssl.cnf',//Remove this line when test on travis-ci.org
+            //'config'=>'C:/wamp64/bin/apache/apache2.4.27/conf/openssl.cnf',//Remove this line when test on travis-ci.org
             'digest_alg' => 'sha512',
             'private_key_bits' => 4096,
             'private_key_type' => OPENSSL_KEYTYPE_RSA));
