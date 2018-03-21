@@ -1,13 +1,17 @@
 <?php
-use Firebase\JWT\JWT;
-use Firebase\JWT\JWK;
+namespace Firebase\JWT;
 
-class JWTTest extends \PHPUnit\Framework\TestCase
+use ArrayObject;
+use PHPUnit_Framework_TestCase;
+
+class JWTTest extends PHPUnit_Framework_TestCase
 {
+    public static $opensslVerifyReturnValue;
+
     public function testEncodeDecode()
     {
-        $msg = JWT::encode(['abc'], 'my_key');
-        $this->assertEquals(JWT::decode($msg, 'my_key', array('HS256')), ['abc']);
+        $msg = JWT::encode('abc', 'my_key');
+        $this->assertEquals(JWT::decode($msg, 'my_key', array('HS256')), 'abc');
     }
 
     public function testDecodeFromPython()
@@ -19,15 +23,13 @@ class JWTTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException Firebase\JWT\ExpiredException
-     */
     public function testDecodeByJWKKeySetTokenExpired()
     {
         $jsKey = '{"keys":[{"kty":"RSA","e":"AQAB","use":"sig","kid":"s1","n":"kWp2zRA23Z3vTL4uoe8kTFptxBVFunIoP4t_8TDYJrOb7D1iZNDXVeEsYKp6ppmrTZDAgd-cNOTKLd4M39WJc5FN0maTAVKJc7NxklDeKc4dMe1BGvTZNG4MpWBo-taKULlYUu0ltYJuLzOjIrTHfarucrGoRWqM0sl3z2-fv9k"}]}';
         $key = JWK::parseKeySet($jsKey);
 
         $msg = 'eyJraWQiOiJzMSIsImFsZyI6IlJTMjU2In0.eyJzY3AiOlsib3BlbmlkIiwiZW1haWwiLCJwcm9maWxlIiwiYWFzIl0sInN1YiI6InRVQ1l0bmZJQlBXY3JTSmY0eUJmdk4xa3d3NEtHY3kzTElQazFHVnpzRTAiLCJjbG0iOlsiITV2OEgiXSwiaXNzIjoiaHR0cDpcL1wvMTMwLjIxMS4yNDMuMTE0OjgwODBcL2MyaWQiLCJleHAiOjE0NDExMjY1MzksInVpcCI6eyJncm91cHMiOlsiYWRtaW4iLCJhdWRpdCJdfSwiY2lkIjoicGstb2lkYy0wMSJ9.PvYrnf3k1Z0wgRwCgq0WXKaoIv1hHtzBFO5cGfCs6bl4suc6ilwCWmJqRxGYkU2fNTGyMOt3OUnnBEwl6v5qN6jv7zbkVAVKVvbQLxhHC2nXe3izvoCiVaMEH6hE7VTWwnPbX_qO72mCwTizHTJTZGLOsyXLYM6ctdOMf7sFPTI';
+        $this->setExpectedException('Firebase\JWT\ExpiredException');
         JWT::decode($msg, $key, array('RS256'));
     }
 
@@ -37,7 +39,7 @@ class JWTTest extends \PHPUnit\Framework\TestCase
         $key = JWK::parseKeySet($jsKey);
 
         $msg = 'eyJraWQiOiJzMSIsImFsZyI6IlJTMjU2In0.eyJzY3AiOlsib3BlbmlkIiwiZW1haWwiLCJwcm9maWxlIiwiYWFzIl0sInN1YiI6InRVQ1l0bmZJQlBXY3JTSmY0eUJmdk4xa3d3NEtHY3kzTElQazFHVnpzRTAiLCJjbG0iOlsiITV2OEgiXSwiaXNzIjoiaHR0cDpcL1wvMTMwLjIxMS4yNDMuMTE0OjgwODBcL2MyaWQiLCJleHAiOjE0NDExMjY1MzksInVpcCI6eyJncm91cHMiOlsiYWRtaW4iLCJhdWRpdCJdfSwiY2lkIjoicGstb2lkYy0wMSJ9.PvYrnf3k1Z0wgRwCgq0WXKaoIv1hHtzBFO5cGfCs6bl4suc6ilwCWmJqRxGYkU2fNTGyMOt3OUnnBEwl6v5qN6jv7zbkVAVKVvbQLxhHC2nXe3izvoCiVaMEH6hE7VTWwnPbX_qO72mCwTizHTJTZGLOsyXLYM6ctdOMf7sFPTI';
-        $this->expectException('Firebase\JWT\ExpiredException');
+        $this->setExpectedException('Firebase\JWT\ExpiredException');
         $payload = JWT::decode($msg, $key, array('RS256'));
         $this->assertEquals("tUCYtnfIBPWcrSJf4yBfvN1kww4KGcy3LIPk1GVzsE0",$payload->sub);
         $this->assertEquals(1441126539,$payload->exp);
@@ -49,7 +51,7 @@ class JWTTest extends \PHPUnit\Framework\TestCase
         $key = JWK::parseKeySet($jsKey);
 
         $msg = 'eyJraWQiOiJDWHVwIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJmOGI2N2NjNDYwMzA3NzdlZmQ4YmNlNmMxYmZlMjljNmMwZjgxOGVjIiwic2NwIjpbIm9wZW5pZCIsIm5hbWUiLCJwcm9maWxlIiwicGljdHVyZSIsImVtYWlsIiwicnMtcGstbWFpbiIsInJzLXBrLXNvIiwicnMtcGstaXNzdWUiLCJycy1way13ZWIiXSwiY2xtIjpbIiE1djhIIl0sImlzcyI6Imh0dHBzOlwvXC9pZC5wcm9qZWN0a2l0Lm5ldFwvYXV0aGVudGljYXRlIiwiZXhwIjoxNDkyMjI4MzM2LCJpYXQiOjE0OTEzNjQzMzYsImNpZCI6ImNpZC1way13ZWIifQ.KW1K-72bMtiNwvyYBgffG6VaG6I59cELGYQR8M2q7HA8dmzliu6QREJrqyPtwW_rDJZbsD3eylvkRinK9tlsMXCOfEJbxLdAC9b4LKOsnsbuXXwsJHWkFG0a7osdW0ZpXJDoMFlO1aosxRGMkaqhf1wIkvQ5PM_EB08LJv7oz64Antn5bYaoajwgvJRl7ChatRDn9Sx5UIElKD1BK4Uw5WdrZwBlWdWZVNCSFhy4F6SdZvi3OBlXzluDwq61RC-pl2iivilJNljYWVrthHDS1xdtaVz4oteHW13-IS7NNEz6PVnzo5nyoPWMAB4JlRnxcfOFTTUqOA2mX5Csg0UpdQ';
-        $this->expectException('Firebase\JWT\ExpiredException');
+        $this->setExpectedException('Firebase\JWT\ExpiredException');
         $payload = JWT::decode($msg, $key, array('RS256'));
         $this->assertEquals("f8b67cc46030777efd8bce6c1bfe29c6c0f818ec",$payload->sub);
         $this->assertEquals(1492228336,$payload->exp);
@@ -57,25 +59,25 @@ class JWTTest extends \PHPUnit\Framework\TestCase
 
     public function testUrlSafeCharacters()
     {
-        $encoded = JWT::encode(['f?'], 'a');
-        $this->assertEquals(['f?'], JWT::decode($encoded, 'a', array('HS256')));
+        $encoded = JWT::encode('f?', 'a');
+        $this->assertEquals('f?', JWT::decode($encoded, 'a', array('HS256')));
     }
 
     public function testMalformedUtf8StringsFail()
     {
-        $this->expectException('DomainException');
-        JWT::encode(array('c', 128), 'a', 'RSA');
+        $this->setExpectedException('DomainException');
+        JWT::encode(pack('c', 128), 'a');
     }
 
     public function testMalformedJsonThrowsException()
     {
-        $this->expectException('DomainException');
+        $this->setExpectedException('DomainException');
         JWT::jsonDecode('this is not valid JSON string');
     }
 
     public function testExpiredToken()
     {
-        $this->expectException('Firebase\JWT\ExpiredException');
+        $this->setExpectedException('Firebase\JWT\ExpiredException');
         $payload = array(
             "message" => "abc",
             "exp" => time() - 20); // time in the past
@@ -85,7 +87,7 @@ class JWTTest extends \PHPUnit\Framework\TestCase
 
     public function testBeforeValidTokenWithNbf()
     {
-        $this->expectException('Firebase\JWT\BeforeValidException');
+        $this->setExpectedException('Firebase\JWT\BeforeValidException');
         $payload = array(
             "message" => "abc",
             "nbf" => time() + 20); // time in the future
@@ -95,7 +97,7 @@ class JWTTest extends \PHPUnit\Framework\TestCase
 
     public function testBeforeValidTokenWithIat()
     {
-        $this->expectException('Firebase\JWT\BeforeValidException');
+        $this->setExpectedException('Firebase\JWT\BeforeValidException');
         $payload = array(
             "message" => "abc",
             "iat" => time() + 20); // time in the future
@@ -131,7 +133,7 @@ class JWTTest extends \PHPUnit\Framework\TestCase
         $payload = array(
             "message" => "abc",
             "exp" => time() - 70); // time far in the past
-        $this->expectException('Firebase\JWT\ExpiredException');
+        $this->setExpectedException('Firebase\JWT\ExpiredException');
         $encoded = JWT::encode($payload, 'my_key');
         $decoded = JWT::decode($encoded, 'my_key', array('HS256'));
         $this->assertEquals($decoded->message, 'abc');
@@ -179,8 +181,8 @@ class JWTTest extends \PHPUnit\Framework\TestCase
             "message" => "abc",
             "nbf"     => time() + 65); // not before too far in future
         $encoded = JWT::encode($payload, 'my_key');
-        $this->expectException('Firebase\JWT\BeforeValidException');
-        JWT::decode($encoded, 'my_key', array('HS256'));
+        $this->setExpectedException('Firebase\JWT\BeforeValidException');
+        $decoded = JWT::decode($encoded, 'my_key', array('HS256'));
         JWT::$leeway = 0;
     }
 
@@ -203,8 +205,8 @@ class JWTTest extends \PHPUnit\Framework\TestCase
             "message" => "abc",
             "iat"     => time() + 65); // issued too far in future
         $encoded = JWT::encode($payload, 'my_key');
-        $this->expectException('Firebase\JWT\BeforeValidException');
-        JWT::decode($encoded, 'my_key', array('HS256'));
+        $this->setExpectedException('Firebase\JWT\BeforeValidException');
+        $decoded = JWT::decode($encoded, 'my_key', array('HS256'));
         JWT::$leeway = 0;
     }
 
@@ -214,8 +216,8 @@ class JWTTest extends \PHPUnit\Framework\TestCase
             "message" => "abc",
             "exp" => time() + 20); // time in the future
         $encoded = JWT::encode($payload, 'my_key');
-        $this->expectException('Firebase\JWT\SignatureInvalidException');
-        JWT::decode($encoded, 'my_key2', array('HS256'));
+        $this->setExpectedException('Firebase\JWT\SignatureInvalidException');
+        $decoded = JWT::decode($encoded, 'my_key2', array('HS256'));
     }
 
     public function testNullKeyFails()
@@ -224,8 +226,8 @@ class JWTTest extends \PHPUnit\Framework\TestCase
             "message" => "abc",
             "exp" => time() + JWT::$leeway + 20); // time in the future
         $encoded = JWT::encode($payload, 'my_key');
-        $this->expectException('InvalidArgumentException');
-        JWT::decode($encoded, null, array('HS256'));
+        $this->setExpectedException('InvalidArgumentException');
+        $decoded = JWT::decode($encoded, null, array('HS256'));
     }
 
     public function testEmptyKeyFails()
@@ -234,78 +236,95 @@ class JWTTest extends \PHPUnit\Framework\TestCase
             "message" => "abc",
             "exp" => time() + JWT::$leeway + 20); // time in the future
         $encoded = JWT::encode($payload, 'my_key');
-        $this->expectException('InvalidArgumentException');
-        JWT::decode($encoded, '', array('HS256'));
+        $this->setExpectedException('InvalidArgumentException');
+        $decoded = JWT::decode($encoded, '', array('HS256'));
     }
 
     public function testRSEncodeDecode()
     {
-        $privKey = openssl_pkey_new(array(
-            //'config'=>'C:/wamp64/bin/apache/apache2.4.27/conf/openssl.cnf',//Remove this line when test on travis-ci.org
-            'digest_alg' => 'sha512',
-            'private_key_bits' => 4096,
+        $privKey = openssl_pkey_new(array('digest_alg' => 'sha256',
+            'private_key_bits' => 1024,
             'private_key_type' => OPENSSL_KEYTYPE_RSA));
-        if($privKey === false)
-        {
-            $s = openssl_error_string();
-            $this->fail("Cannot create private key: $s");
-        }
-        else
-        {
-            $msg = JWT::encode(['abc'], $privKey, 'RS256');
-            $pubKey = openssl_pkey_get_details($privKey);
-            $pubKey = $pubKey['key'];
-            $decoded = JWT::decode($msg, $pubKey, array('RS256'));
-            $this->assertEquals($decoded, ['abc']);
-        }
+        $msg = JWT::encode('abc', $privKey, 'RS256');
+        $pubKey = openssl_pkey_get_details($privKey);
+        $pubKey = $pubKey['key'];
+        $decoded = JWT::decode($msg, $pubKey, array('RS256'));
+        $this->assertEquals($decoded, 'abc');
     }
 
     public function testKIDChooser()
     {
         $keys = array('1' => 'my_key', '2' => 'my_key2');
-        $msg = JWT::encode(['abc'], $keys['1'], 'HS256', '1');
+        $msg = JWT::encode('abc', $keys['1'], 'HS256', '1');
         $decoded = JWT::decode($msg, $keys, array('HS256'));
-        $this->assertEquals($decoded, ['abc']);
+        $this->assertEquals($decoded, 'abc');
     }
 
     public function testArrayAccessKIDChooser()
     {
         $keys = new ArrayObject(array('1' => 'my_key', '2' => 'my_key2'));
-        $msg = JWT::encode(['abc'], $keys['1'], 'HS256', '1');
+        $msg = JWT::encode('abc', $keys['1'], 'HS256', '1');
         $decoded = JWT::decode($msg, $keys, array('HS256'));
-        $this->assertEquals($decoded, ['abc']);
+        $this->assertEquals($decoded, 'abc');
     }
 
     public function testNoneAlgorithm()
     {
-        $msg = JWT::encode(['abc'], 'my_key');
-        $this->expectException('UnexpectedValueException');
+        $msg = JWT::encode('abc', 'my_key');
+        $this->setExpectedException('UnexpectedValueException');
         JWT::decode($msg, 'my_key', array('none'));
     }
 
     public function testIncorrectAlgorithm()
     {
-        $msg = JWT::encode(['abc'], 'my_key');
-        $this->expectException('UnexpectedValueException');
+        $msg = JWT::encode('abc', 'my_key');
+        $this->setExpectedException('UnexpectedValueException');
         JWT::decode($msg, 'my_key', array('RS256'));
     }
 
     public function testMissingAlgorithm()
     {
-        $msg = JWT::encode(['abc'], 'my_key');
-        $this->expectException('UnexpectedValueException');
+        $msg = JWT::encode('abc', 'my_key');
+        $this->setExpectedException('UnexpectedValueException');
         JWT::decode($msg, 'my_key');
     }
 
     public function testAdditionalHeaders()
     {
-        $msg = JWT::encode(['abc'], 'my_key', 'HS256', null, array('cty' => 'test-eit;v=1'));
-        $this->assertEquals(JWT::decode($msg, 'my_key', array('HS256')), ['abc']);
+        $msg = JWT::encode('abc', 'my_key', 'HS256', null, array('cty' => 'test-eit;v=1'));
+        $this->assertEquals(JWT::decode($msg, 'my_key', array('HS256')), 'abc');
     }
 
     public function testInvalidSegmentCount()
     {
-        $this->expectException('UnexpectedValueException');
+        $this->setExpectedException('UnexpectedValueException');
         JWT::decode('brokenheader.brokenbody', 'my_key', array('HS256'));
     }
+
+    public function testInvalidSignatureEncoding()
+    {
+        $msg = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwibmFtZSI6ImZvbyJ9.Q4Kee9E8o0Xfo4ADXvYA8t7dN_X_bU9K5w6tXuiSjlUxx";
+        $this->setExpectedException('UnexpectedValueException');
+        JWT::decode($msg, 'secret', array('HS256'));
+    }
+
+    public function testVerifyError()
+    {
+        $this->setExpectedException('DomainException');
+        $pkey = openssl_pkey_new(array('private_key_bits' => 1024));
+        $msg = JWT::encode('abc', $pkey, 'RS256');
+        self::$opensslVerifyReturnValue = -1;
+        JWT::decode($msg, $pkey, array('RS256'));
+    }
+}
+
+/*
+ * Allows the testing of openssl_verify with an error return value
+ */
+function openssl_verify($msg, $signature, $key, $algorithm)
+{
+    if (null !== JWTTest::$opensslVerifyReturnValue) {
+        return JWTTest::$opensslVerifyReturnValue;
+    }
+    return \openssl_verify($msg, $signature, $key, $algorithm);
 }
