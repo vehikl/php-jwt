@@ -120,7 +120,6 @@ Changelog
 
 #### 5.0.0 / 2018-03-21
   - Update to 5.0.0 from upstream
-  - Minimum PHP version downgraded from `5.4.0` to `5.3.0`.
 
 #### 4.0.0 / 2016-08-10
   - Update to 4.0.0 from upstream
