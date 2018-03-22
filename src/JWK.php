@@ -24,7 +24,7 @@ class JWK
      */
     public static function parseKeySet($source)
     {
-        $keys = array();
+        $keys = [];
         if (is_string($source)) {
             $source = json_decode($source, true);
         } else if (is_object($source)) {
